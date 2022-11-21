@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        vector<int> minT(triangle.size());
+        //save the weight of the branch
+        minT[0] = triangle[0][0];
+        for (int i = 1; i < triangle.size(); i++) {
+            //check the right branch of tree
+            minT[i] = triangle[i][i] + minT[i-1];
+            //find the best way
+            for (auto j = i-1; j > 0; j--){
+                minT[j] = min(minT[j], minT[j-1]) + triangle[i][j];
+            }
+            //check the left branch of tree
+            minT[0] = minT[0] + triangle[i][0];
+        }
+        return *min_element(minT.begin(), minT.end());
+    }
+};
