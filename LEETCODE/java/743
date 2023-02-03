@@ -1,0 +1,49 @@
+class Solution {
+    public int networkDelayTime(int[][] times, int n, int k) {
+        Map<Integer, List<int[]>> graph = new HashMap<>();
+        for(int[] time : times){
+
+            int root = time[0]; 
+            int target = time[1];
+            int weight = time[2];
+            //add a new root if it not exist in graph and create new LinkedList for adding new root
+            if ( !graph.containsKey(root) ){
+                graph.put(root, new LinkedList<int[]>()); 
+            }
+            graph.get(root).add(new int[]{target, weight});
+        }
+        
+        //arrange min -> big
+        Queue<int[]> min = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+
+        //have no node that visited
+        Set<Integer> visited = new HashSet<>(); 
+
+        min.add(new int[]{k, 0});
+
+        int count = 0;
+        //BFS 
+        while( !min.isEmpty() ){
+            int[] top = min.poll();
+            int root = top[0];
+            int weight = top[1];
+            if (visited.contains(root)){
+                continue;
+            }
+
+            count =  weight;
+            visited.add(root);
+
+            if ( !graph.containsKey(root) ){
+                continue;
+            }
+
+            for (int[] edge : graph.get(root)){
+                int target = edge[0];
+                int targetWeight = edge[1];
+                min.add(new int[]{target, weight + targetWeight});
+            }
+        }
+        return visited.size() == n ? count : -1;
+    }
+}
